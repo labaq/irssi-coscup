@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: irssi-coscup
+  name: irssi-coscup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: irssi-coscup
+  template:
+    metadata:
+      labels:
+        app: irssi-coscup
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+      - image: harbor-a.labaq.life/labaq/irssi-labaq
+        name: irssi-labaq
+        resources: {}
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo; sleep 10;done"]
+        volumeMounts:
+        - mountPath: "/home/user"
+          name: log
+      volumes:
+        - name: log
+          persistentVolumeClaim:
+            claimName: irssi-coscup
